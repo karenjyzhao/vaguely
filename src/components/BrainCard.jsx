@@ -2,6 +2,11 @@ import { motion, useMotionValue } from 'framer-motion'
 import { useEffect } from 'react'
 import useStore from '../store/useStore'
 
+function seeded(id, salt) {
+  const v = Math.sin(id * 9301 + salt * 49297) * 10000
+  return v - Math.floor(v)
+}
+
 export default function BrainCard({ item, onDragEnd, dragConstraints }) {
   const removeItem = useStore((s) => s.removeItem)
   const updatePosition = useStore((s) => s.updatePosition)
@@ -10,6 +15,7 @@ export default function BrainCard({ item, onDragEnd, dragConstraints }) {
   // them, so CSS `left`/`top` stays fixed and there is no double-offset.
   const x = useMotionValue(item.position?.x ?? 0)
   const y = useMotionValue(item.position?.y ?? 0)
+  const cardRotate = (seeded(item.id, 2) - 0.5) * 10 // ±5deg, consistent per card
 
   // Sync if the position is changed externally (e.g. store reset).
   useEffect(() => {
@@ -30,10 +36,11 @@ export default function BrainCard({ item, onDragEnd, dragConstraints }) {
           updatePosition(item.id, { x: x.get(), y: y.get() })
         }
       }}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+      animate={{ opacity: 1, scale: 1, rotate: cardRotate }}
       exit={{ opacity: 0, scale: 0.8 }}
-      className="absolute bg-blue-100 rounded-xl shadow-sm p-3 text-sm text-gray-700 cursor-grab active:cursor-grabbing select-none"
+      whileDrag={{ zIndex: 50, scale: 1.05, rotate: 0, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
+      className="absolute rounded-xl shadow-sm p-3 text-sm text-gray-700 cursor-grab active:cursor-grabbing select-none"
       style={{
         width: '140px',
         minHeight: '60px',
@@ -42,10 +49,11 @@ export default function BrainCard({ item, onDragEnd, dragConstraints }) {
         top: '50%',
         marginLeft: '-70px',
         marginTop: '-30px',
+        backgroundColor: item.color ?? '#DBEAFE',
+        pointerEvents: 'auto',
         x,
         y,
       }}
-      whileDrag={{ zIndex: 50, scale: 1.05, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
     >
       <button
         onClick={(e) => {

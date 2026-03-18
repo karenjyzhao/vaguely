@@ -13,12 +13,12 @@ export default function BrainstormCanvas() {
     <div
       ref={canvasRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ minHeight: 'calc(100vh - 64px)' }}
+      style={{ minHeight: 'calc(100vh - 64px)', pointerEvents: 'none' }}
     >
       {/* Centered input */}
       <div
         className="absolute left-1/2 top-1/2 z-20"
-        style={{ transform: 'translate(-50%, -50%)' }}
+        style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'auto' }}
       >
         <BrainInput />
       </div>

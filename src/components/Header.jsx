@@ -3,6 +3,7 @@ import useStore from '../store/useStore'
 export default function Header() {
   const mode = useStore((s) => s.mode)
   const setMode = useStore((s) => s.setMode)
+  const name = useStore((s) => s.name)
 
   const toggle = () => setMode(mode === 'brainstorm' ? 'calendar' : 'brainstorm')
 
@@ -10,7 +11,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-white border-b border-gray-100">
       <div className="flex-1" />
       <h1 className="font-serif italic text-2xl tracking-tight text-gray-800 flex-1 text-center">
-        karen's brain
+        {name ? `${name}'s brain` : 'brain'}
       </h1>
       <div className="flex-1 flex items-center justify-end gap-2">
         <span
